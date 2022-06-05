@@ -2,13 +2,11 @@ package com.emk.omni.input;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.emk.omni.entities.Player;
+import com.emk.omni.entities.player.Aim;
+import com.emk.omni.entities.player.Player;
 
 public class PlayerInputProcessor extends InputAdapter {
     private Player player;
-
-    private boolean movingLeft;
-    private boolean movingRight;
 
     public PlayerInputProcessor(Player player) {
         this.player = player;
@@ -16,9 +14,16 @@ public class PlayerInputProcessor extends InputAdapter {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println(button);
-        return false;
+        player.setHoldingLeftButton(true);
+        return true;
     }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        player.setHoldingLeftButton(false);
+        return true;
+    }
+
 
     @Override
     public boolean keyDown(int keycode) {
@@ -28,7 +33,13 @@ public class PlayerInputProcessor extends InputAdapter {
         else if (keycode == Input.Keys.D) {
             this.player.setMovingRight(true);
         }
-        return false;
+        if (keycode == Input.Keys.W) {
+            this.player.setMovingUp(true);
+        }
+        else if (keycode == Input.Keys.S) {
+            this.player.setMovingDown(true);
+        }
+        return true;
     }
 
     @Override
@@ -39,6 +50,18 @@ public class PlayerInputProcessor extends InputAdapter {
         else if (keycode == Input.Keys.D) {
             this.player.setMovingRight(false);
         }
-        return false;
+        if (keycode == Input.Keys.W) {
+            this.player.setMovingUp(false);
+        }
+        else if (keycode == Input.Keys.S) {
+            this.player.setMovingDown(false);
+        }
+        return true;
+    }
+
+    public boolean mouseMoved(int screenX, int screenY) {
+        player.aim.processMouseMove();
+        player.aim.speedUp(false);
+        return true;
     }
 }
